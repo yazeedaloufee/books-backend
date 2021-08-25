@@ -46,10 +46,18 @@ function seedDAtacollection(){
     description:'overview:Chloe, a teenager who is confined to a wheelchair, is homeschooled by her mother, Diane. Chloe soon becomes suspicious of her mother and begins to suspect that she may be harboring a dark secret.',
     email:'yazeedaloufee@gmail.com'
   })
-chicago.save();
-hunterKiller.save();
-run.save();
 
+  const book4 =new bookModel({
+    title:'book4',
+    description:'by her mother, Diane. Chloe soon becomes suspicious of her mother and begins to suspect that she may be harboring a dark secret.',
+    email:'noorofi@gmail.com'
+  })
+
+
+// chicago.save();
+// hunterKiller.save();
+// run.save();
+book4.save();
 
 }
 
@@ -57,8 +65,8 @@ run.save();
 server.get('/books',getBooksHandler);
 
 function getBooksHandler(req,res){
-
-  bookModel.find({},function(error,ownerData){
+  let email=req.query.email;
+  bookModel.find({email:email},function(error,ownerData){
     if(error){ console.log('error in getting data from data base')}
     else{
       console.log(ownerData)
@@ -72,7 +80,7 @@ function getBooksHandler(req,res){
 
 
 
-seedDAtacollection();
+// seedDAtacollection();
 //server testing
 server.get('/test',testHandler);
 
