@@ -11,6 +11,9 @@ const PORT=process.env.PORT;
 const server = express();
 server.use(cors());
 
+// middleware to parse  the request body
+server.use(express.json());
+
 // mongoose.connect('mongodb://localhost:27017/books1', {useNewUrlParser: true, useUnifiedTopology: true});
 
 // const db = mongoose.connection;
@@ -74,9 +77,51 @@ function getBooksHandler(req,res){
     }
   })
 }
+//delete books from data
+server.delete("/books/:_id",deleteBookHandler);
+
+function deleteBookHandler(request,responce){
+  let _id=request.params._id;
+  let email=request.query.email;
+  console.log(email)
+  bookModel.remove({_id:_id},(error,bookData)=>{
+    if(error){console.log("error in deleting data")}
+    else{ 
+      console.log("data deleted",bookData);
+      bookModel.find({email:email},function(error,ownerData){
+        if(error){ console.log('error in getting data from data base')}
+        else{
+          console.log(ownerData)
+          responce.send(ownerData);
+        }
+      })
+
+    }
+  })
+}
+
+server.post('/addbooks',addBooksHandler);
+function addBooksHandler(request,response){
+// console.log('addbookshandler is working');
+const receivedBook=request.body;
 
 
+const newBook =new bookModel({
+  title:receivedBook.bookName,
+  description:receivedBook.description,
+  email:receivedBook.email
+})
+console.log(newBook);
+newBook.save();
+bookModel.find({email:receivedBook.email},function(error,ownerData){
+  if(error){ console.log('error in getting data from data base')}
+  else{
+    console.log(ownerData)
+    response.send(ownerData);
+  }
+})
 
+}
 
 
 
