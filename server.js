@@ -79,6 +79,36 @@ function getBooksHandler(req,res){
 }
 //delete books from data
 server.delete("/books/:_id",deleteBookHandler);
+server.put('/updatebook/:_id',updateBookHandler)
+
+function updateBookHandler(request,response){
+  let _id=request.params._id;
+  console.log('id',request.params._id)
+  let {email,title,description}=request.body;
+  console.log(email,title,description,_id);
+  console.log('we are in update function');
+  bookModel.findOne({_id:_id},(error,bookdata)=>{
+    console.log('book data',bookdata);
+    bookdata.email=email;
+    bookdata.title=title;
+    bookdata.description=description;
+    console.log(bookdata);
+    bookdata.save()
+    .then(()=>{
+      bookModel.find({email:email},function(error,ownerData){
+        if(error){ console.log('error in getting data from data base')}
+        else{
+          console.log(ownerData)
+          response.send(ownerData);
+        }
+      })
+
+    })
+  })
+
+
+
+}
 
 function deleteBookHandler(request,responce){
   let _id=request.params._id;
